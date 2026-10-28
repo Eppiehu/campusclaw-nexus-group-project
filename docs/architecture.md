@@ -12,6 +12,10 @@
 | 外部工具与任务 | MCP Python SDK、Redis 7+、RQ Worker | 工具调用、索引、发卷、批改及周报任务 |
 | 质量与部署 | OpenSpec、pytest、Playwright、GitHub Actions、Docker Compose、Nginx | 规约、测试、CI、容器运行与 HTTPS 入口 |
 
+## 与早期课程练习的关系
+
+本仓库是后续 **CampusClaw Nexus 小组项目** 的目标方案，延续 Python/Flask 与 Docker Compose，但按小组选题增加 Vue 前端、JWT API、PostgreSQL/pgvector 和异步 Worker。早期练习中的 Flask/Jinja SSR、signed-cookie Session、SQLite 属于原阶段的实现约束；不能把两套架构混写成同一系统的已完成状态。若老师要求小组项目继续沿用某项早期约束，先在 OpenSpec 中记录冲突、取舍与迁移路径，经小组和老师确认后修改目标方案。
+
 ## 分层关系
 
 教师/学生 Web → Flask API 与权限层 → Agent、Skill、RAG 和 MCP 服务 → 异步 Worker → PostgreSQL/pgvector、Redis 与材料文件存储。
