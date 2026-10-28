@@ -16,6 +16,8 @@
 - [AI 开发规则](AGENTS.md)：供参与开发的 AI 助手遵守的项目约束。
 - [OpenSpec 变更](openspec/changes/group-project-baseline/proposal.md)：小组项目基线的变更范围与验收标准。
 - [Linux 部署与四项验收门槛](docs/operations-acceptance.md)：容器部署、安全测试、并发压测和虚构种子数据。
+- [评审核对表](docs/review-checklist.md)：需求、规约、验收证据和当前状态的对应关系。
+- [OpenSpec 设计](openspec/changes/group-project-baseline/design.md)、[任务](openspec/changes/group-project-baseline/tasks.md)与[能力规约](openspec/changes/group-project-baseline/specs)：决策、待办及可测试场景。
 
 ## 项目目标
 
