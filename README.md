@@ -2,7 +2,7 @@
 
 这是课程开发小组作业的**需求与设计仓库**。项目拟在 CampusClaw 课程基础上建设可运行的教师端和学生端，形成“讲义—学习助手—作业”的完整业务路径，并扩展知识缺口回补、同纲不同卷和学情周报。
 
-**当前阶段：方案与接口规约。仓库暂不包含应用代码，也不把其他仓库中的个人实现计为本小组已交付成果。** 实际开发、成员贡献和验收结果以本仓库后续的 Issue、提交、PR 与测试记录为准。
+**当前阶段：方案与接口规约。仓库只包含规范文档和不含密钥的配置模板，暂不包含应用代码，也不把其他仓库中的个人实现计为本小组已交付成果。** 实际开发、成员贡献和验收结果以本仓库后续的 Issue、提交、PR 与测试记录为准。
 
 ## 文档导航
 
@@ -19,6 +19,10 @@
 - [Linux 部署与四项验收门槛](docs/operations-acceptance.md)：容器部署、安全测试、并发压测和虚构种子数据。
 - [评审核对表](docs/review-checklist.md)：需求、规约、验收证据和当前状态的对应关系。
 - [OpenSpec 设计](openspec/changes/group-project-baseline/design.md)、[任务](openspec/changes/group-project-baseline/tasks.md)与[能力规约](openspec/changes/group-project-baseline/specs)：决策、待办及可测试场景。
+- [前端开发蓝图](docs/frontend.md)、[后端开发蓝图](docs/backend.md)：页面、模块、状态、Agent 与任务执行的实现边界。
+- [API 清单](docs/api-contract.md)、[数据模型](docs/data-model.md)：接口方法、权限、关键字段和约束。
+- [配置与环境变量](docs/configuration.md)、[无密钥配置模板](.env.example)、[Linux 部署方案](docs/linux-deploy.md)：如何配置、构建、迁移、初始化与验收。
+- [开发任务拆解](docs/work-plan.md)：工作包、依赖、两人协作与完成定义。
 
 ## 项目目标
 
@@ -33,7 +37,7 @@
 
 - 服务端按当前登录身份和班级校验每次资源访问，不能仅靠前端隐藏数据。
 - 密钥、账号密码、真实学生数据和部署凭据不得提交到仓库。
-- 本仓库初始提交仅含 Markdown 文档；实现代码需经小组确认后再通过 PR 引入。
+- 当前阶段只提交规范文档和不含密钥的配置模板；实现代码需经小组确认后再通过 PR 引入。
 
 需求依据：小组选题说明《CampusClaw Nexus：基于 Agentic RAG、MCP 与人机协同知识演进的智能教学平台》。本文档将其整理为开发可执行的要求；如课程后续规则变化，以小组确认后的修订记录为准。
 
