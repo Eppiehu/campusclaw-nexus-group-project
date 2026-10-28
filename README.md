@@ -14,6 +14,7 @@
 - [接口与数据契约](docs/contracts.md)：关键实体、权限边界和接口行为。
 - [安全规范](docs/security.md)：认证授权、班级隔离、文件与模型工具安全、凭据和审计要求。
 - [AI 开发规则](AGENTS.md)：供参与开发的 AI 助手遵守的项目约束。
+- [PR 提交模板](.github/pull_request_template.md)：把需求、影响、验证与风险纳入每次评审。
 - [OpenSpec 变更](openspec/changes/group-project-baseline/proposal.md)：小组项目基线的变更范围与验收标准。
 - [Linux 部署与四项验收门槛](docs/operations-acceptance.md)：容器部署、安全测试、并发压测和虚构种子数据。
 - [评审核对表](docs/review-checklist.md)：需求、规约、验收证据和当前状态的对应关系。
