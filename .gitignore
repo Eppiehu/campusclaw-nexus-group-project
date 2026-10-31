@@ -2,6 +2,7 @@
 .env
 .env.*
 !.env.example
+!.env.nexus.example
 *.pem
 *.key
 *.p12
@@ -20,6 +21,7 @@ htmlcov/
 
 # Frontend dependencies and build output.
 node_modules/
+web/.pnpm-store/
 dist/
 build/
 coverage/
@@ -28,9 +30,11 @@ test-results/
 
 # Runtime data and local databases.
 /data/
+/nexus-data/
 /uploads/
 /storage/
 /logs/
+/backups/
 *.db
 *.sqlite
 *.sqlite3

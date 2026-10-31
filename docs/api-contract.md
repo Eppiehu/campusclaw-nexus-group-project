@@ -77,4 +77,3 @@ Skill/MCP 的拟定接口如下。具体字段与可执行格式在单独实现�
 ## 5. SSE 事件与审计
 
 流事件至少包括 `message.delta`、`citation`、`tool.started`、`tool.finished`、`message.completed` 和 `error`，各事件携带会话 ID 与事件序号；断线重试不得重复执行有副作用工具。模型调用审计记录应用/模板版本、检索片段 ID、工具调用 ID、耗时和结果状态，不记录密钥或完整敏感输入。
-
