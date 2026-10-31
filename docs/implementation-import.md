@@ -40,7 +40,8 @@
 | 选定文件的明文密钥/私钥模式扫描 | PASS | 未发现真实 API Key、SSH 私钥或个人服务器口令；CI 中仅有明确标注的虚构测试密码 |
 | Python 源码语法编译 | PASS | 本地运行 `python -m compileall -q app scripts tests_nexus migrations` |
 | Vue 类型检查与构建 | PASS | 在来源相同的 `web/` 源码上运行 `vue-tsc --noEmit` 与 `vite build`；产物未入库 |
-| PostgreSQL/Redis 业务测试 | NOT RUN | 本轮本机没有隔离的服务环境；以 PR 的 CI 结果为准，不能提前声明通过 |
+| PostgreSQL/Redis 业务测试 | PASS | [PR #5 的 Nexus checks](https://github.com/Eppiehu/campusclaw-nexus-group-project/actions/runs/41202412884) 后端 Job 在 GitHub Actions 的隔离 PostgreSQL/Redis 服务中完成 `pytest tests_nexus -q`；本机未运行该测试 |
+| Vue CI 构建 | PASS | 同一工作流的前端 Job 完成 `pnpm install --frozen-lockfile` 和 `pnpm run build` |
 | Docker 镜像构建与 Linux 冷启动 | NOT RUN | 本轮无本地 Docker；需在全新 Linux 上按 README 实测 |
 | 外部 DeepSeek/MCP、并发和 HTTPS | NOT RUN | 需要授权的隔离环境、配置和原始验收记录 |
 
