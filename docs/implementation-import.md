@@ -24,7 +24,7 @@
 
 | 范围 | 导入基线实际状态 | 小组目标与后续工作 |
 | --- | --- | --- |
-| 前端组织 | Vue 3/TypeScript/Vite/Element Plus/ECharts，主要页面集中于 `web/src/App.vue` | 按[前端蓝图](frontend.md)拆分模块，补 Vue Router、Pinia 与 Playwright E2E |
+| 前端组织 | 页面已从 `web/src/App.vue` 拆到路由、Pinia 和 `web/e2e`；构建与路由刷新可在本仓库验证。Playwright 只接受显式隔离地址，完整后端场景尚未在本文件记为通过 | 令牌刷新、SSE/失败路径和移动端仍按[前端蓝图](frontend.md)继续补齐 |
 | API 契约 | 使用 `/api/nexus/*` 和 `NEXUS_*` 配置；另有 `OPENAI_API_KEY` | 与[API 清单](api-contract.md)、[配置规范](configuration.md)统一或经 OpenSpec 修订目标 |
 | 浏览器认证 | Bearer JWT 保存在 `localStorage`，令牌吊销由服务端检查 | 改为短期内存令牌及受保护刷新机制；复核 CSRF、失效和跨班场景 |
 | 镜像与依赖 | 依赖范围而非完整锁定，构建时在线获取前端包、Python 包及公开模型 | 锁定镜像摘要/依赖，做干净 Linux 冷启动与离线失败提示 |
