@@ -1,0 +1,50 @@
+# Local configuration and credentials. Keep the public template.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Python and test output.
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Frontend dependencies and build output.
+node_modules/
+dist/
+build/
+coverage/
+playwright-report/
+test-results/
+
+# Runtime data and local databases.
+/data/
+/uploads/
+/storage/
+/logs/
+*.db
+*.sqlite
+*.sqlite3
+*.log
+
+# Generated reports and large binary assets.
+*.pdf
+*.ttf
+*.otf
+*.woff
+*.woff2
+
+# Editor and operating-system files.
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
