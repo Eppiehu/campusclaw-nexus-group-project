@@ -2,7 +2,17 @@
 
 ### Requirement: Windows 一键启动
 
-Windows 用户 SHALL 能通过仓库根目录 `start.bat` 调用 PowerShell 5.1，复用现有 Compose 完成配置、构建、迁移及健康等待。脚本 SHALL 保留已有配置、不打印凭据，并只在 API 健康后打开本机地址。
+Windows 用户 SHALL 能通过仓库根目录 `start.bat` 调用 PowerShell 5.1，复用现有 Compose。首次空库才初始化；后续日常启动 SHALL 保留容器、数据和账号，不重复构建、迁移或种子初始化，并只在 API 健康后打开本机地址。显式 `update.bat` SHALL 执行构建和迁移，但不重置已有账号。
+
+#### Scenario: 重复打开已有实例
+
+- **WHEN** 已有镜像、数据库及账号，用户运行 start.bat
+- **THEN** 仅启动缺失或停止的服务并等待健康，不执行构建、迁移或种子初始化，不重新创建已有容器
+
+#### Scenario: 显式更新已有实例
+
+- **WHEN** 用户运行 update.bat
+- **THEN** 构建新版并执行迁移，保留现有账号密码与数据；迁移失败后不启动应用
 
 #### Scenario: Windows 首次启动
 

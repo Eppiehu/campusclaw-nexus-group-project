@@ -6,7 +6,7 @@
 
 ## 当前实现与运行入口
 
-Windows 用户安装并启动 Docker Desktop（Linux 容器）后，可双击根目录 **`start.bat`**，健康检查通过后自动打开本机页面。详细配置与排错见 [Windows 一键启动](docs/windows-start.md)。
+Windows 用户安装并启动 Docker Desktop（Linux 容器）后，可双击根目录 **`start.bat`**，健康检查通过后自动打开本机页面。首次空库才初始化；日常启动复用容器与数据。更新代码时单独使用 **`update.bat`**。详细配置与排错见 [Windows 一键启动](docs/windows-start.md)。
 
 本仓库包含 Python/Flask API、Vue 前端、PostgreSQL/pgvector 迁移、Redis/RQ Worker、LangGraph、MCP 工具、虚构种子账号及隔离测试。它是**待小组复核的实现基线**；完整满足目标规约、Linux 冷启动、并发容量和 HTTPS 尚待逐项验证。
 

@@ -1,4 +1,4 @@
-param([switch]$Check, [switch]$NoBrowser)
+param([switch]$Check, [switch]$NoBrowser, [switch]$Update)
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 
@@ -69,12 +69,37 @@ try {
     }
     if ($Check) { Write-Host 'PASS: Docker, Linux engine, Compose configuration and port preflight.'; exit 0 }
 
-    Invoke-Docker ($script:ComposeArgs + @('build', 'api'))
-    Invoke-Docker ($script:ComposeArgs + @('up', '-d', 'db', 'redis'))
+    # Daily startup reuses the image. Rebuild only on first install or explicit update.
+    $imageExists = [bool](Invoke-Docker -DockerArgs @('image', 'ls', '--quiet', 'campusclaw-nexus-group:local') | Out-String).Trim()
+    if ($Update -or -not $imageExists) {
+        Invoke-Docker ($script:ComposeArgs + @('build', 'api'))
+    }
+    Invoke-Docker ($script:ComposeArgs + @('up', '-d', '--no-build', '--no-recreate', 'db', 'redis'))
     Wait-Healthy 'db' 60
     Wait-Healthy 'redis' 30
-    Invoke-Docker ($script:ComposeArgs + @('run', '--rm', '--no-deps', 'api', 'python', 'scripts/nexus_init.py'))
-    Invoke-Docker ($script:ComposeArgs + @('up', '-d', 'api', 'worker', 'scheduler'))
+    # Use database state rather than a local marker (which can be lost on a new clone).
+    $hasUsersTable = (Invoke-Docker ($script:ComposeArgs + @('exec', '-T', 'db', 'psql', '-U', 'nexus', '-d', 'nexus', '-Atc', "SELECT to_regclass('public.users') IS NOT NULL")) | Out-String).Trim()
+    if ($hasUsersTable -notin @('t', 'f')) { throw 'Could not determine database initialization state.' }
+    $initialized = $false
+    if ($hasUsersTable -eq 't') {
+        $hasUsers = (Invoke-Docker ($script:ComposeArgs + @('exec', '-T', 'db', 'psql', '-U', 'nexus', '-d', 'nexus', '-Atc', 'SELECT EXISTS (SELECT 1 FROM users LIMIT 1)')) | Out-String).Trim()
+        if ($hasUsers -notin @('t', 'f')) { throw 'Could not determine account initialization state.' }
+        $initialized = $hasUsers -eq 't'
+    }
+    if (-not $initialized) {
+        Write-Host 'First installation: initializing the empty database.'
+        Invoke-Docker ($script:ComposeArgs + @('run', '--rm', '--no-deps', 'api', 'python', 'scripts/nexus_init.py'))
+    } elseif ($Update) {
+        Invoke-Docker ($script:ComposeArgs + @('stop', 'api', 'worker', 'scheduler'))
+        Invoke-Docker ($script:ComposeArgs + @('run', '--rm', '--no-deps', 'api', 'python', 'scripts/nexus_init.py', '--migrate-only'))
+    } else {
+        Write-Host 'Existing database retained. Skipping migration and seed initialization.'
+    }
+    if ($Update) {
+        Invoke-Docker ($script:ComposeArgs + @('up', '-d', '--no-build', '--force-recreate', 'api', 'worker', 'scheduler'))
+    } else {
+        Invoke-Docker ($script:ComposeArgs + @('up', '-d', '--no-build', '--no-recreate', 'api', 'worker', 'scheduler'))
+    }
     Wait-Healthy 'api' 90
     Invoke-Docker ($script:ComposeArgs + @('ps'))
     $url = "http://127.0.0.1:$port/"

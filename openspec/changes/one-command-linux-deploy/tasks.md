@@ -1,5 +1,7 @@
 # 任务
 
+- [x] 区分 Windows 日常启动与显式更新，以数据库状态判断首次初始化；模拟验证日常不构建/迁移/seed/重建，以及迁移专用更新路径。
+
 - [x] 增加 Windows BAT/PowerShell 入口及说明；5.1 语法、BAT 缺 Docker 失败、模拟成功/迁移失败控制流已验证，真实 Docker Desktop 启动 NOT RUN。
 
 - [x] 核对现有 Compose、脚本、服务器容器和端口；选择独立部署位置。
