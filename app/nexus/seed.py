@@ -1,8 +1,16 @@
 import os
 from sqlalchemy import select
-from werkzeug.security import generate_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash
 from .db import transaction
 from .models import User, PromptTemplate, Skill, Agent
+
+PRESET_ACCOUNTS = (
+    ('teacher_a', 'teacher', 'A'),
+    ('teacher_b', 'teacher', 'B'),
+    ('student_a1', 'student', 'A'),
+    ('student_a2', 'student', 'A'),
+    ('student_b1', 'student', 'B'),
+)
 
 BUILTINS = [
     ('解题引导','guide','解题,引导,数学,计算,方程','先询问学生的思路，只给下一步提示，不直接给出最终答案。引用已有材料，无法确认时说明限制。'),
@@ -11,15 +19,33 @@ BUILTINS = [
 ]
 
 
+def seed_password(role):
+    password = os.environ.get('NEXUS_TEACHER_PASSWORD' if role == 'teacher' else 'NEXUS_STUDENT_PASSWORD') or ''
+    if len(password) < 10:
+        raise ValueError('Seed passwords must be configured with at least 10 characters')
+    return password
+
+
 def seed():
+    passwords = {'teacher': seed_password('teacher'), 'student': seed_password('student')}
+    created, refreshed = [], []
     with transaction() as db:
-        for name, role, klass in [('teacher_a','teacher','A'),('teacher_b','teacher','B'),
-                                  ('student_a1','student','A'),('student_a2','student','A'),('student_b1','student','B')]:
-            if not db.scalar(select(User).where(User.username==name)):
-                password = os.environ.get('NEXUS_TEACHER_PASSWORD' if role=='teacher' else 'NEXUS_STUDENT_PASSWORD')
-                if not password or len(password)<10:
-                    raise ValueError('Seed passwords must be configured with at least 10 characters')
-                db.add(User(username=name,password_hash=generate_password_hash(password),role=role,class_id=klass))
+        for name, role, klass in PRESET_ACCOUNTS:
+            password = passwords[role]
+            row = db.scalar(select(User).where(User.username==name))
+            if not row:
+                db.add(User(username=name, password_hash=generate_password_hash(password), role=role, class_id=klass))
+                created.append(name)
+                continue
+            changed = False
+            if row.role != role or row.class_id != klass:
+                row.role, row.class_id = role, klass
+                changed = True
+            if not check_password_hash(row.password_hash, password):
+                row.password_hash = generate_password_hash(password)
+                changed = True
+            if changed:
+                refreshed.append(name)
         db.flush()
         for klass in ['A','B']:
             template = db.scalar(select(PromptTemplate).where(PromptTemplate.class_id==klass))
@@ -38,3 +64,4 @@ def seed():
                                 ('学习分析助手',['lecture_search','class_statistics'])]:
                 if not db.scalar(select(Agent).where(Agent.class_id==klass,Agent.name==name)):
                     db.add(Agent(class_id=klass,name=name,template_id=template.id,skill_ids=skills,tools=tools))
+    return created, refreshed

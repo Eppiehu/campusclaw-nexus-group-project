@@ -17,6 +17,20 @@ def embed(value):
     return embed_text(value)
 
 
+# bge-small-zh scores “冰能变成水吗 / 冰能融化成水吗” at 0.896 and an unrelated
+# water question at 0.511. 0.82 merges paraphrases without collapsing a topic.
+GAP_MERGE_SIMILARITY=0.82
+
+
+def cosine(left,right):
+    import math
+    if not left or len(left)!=len(right):return 0.0
+    dot=sum(a*b for a,b in zip(left,right))
+    left_norm=math.sqrt(sum(a*a for a in left));right_norm=math.sqrt(sum(b*b for b in right))
+    if not left_norm or not right_norm:return 0.0
+    return dot/(left_norm*right_norm)
+
+
 def search(db, user, question, material_ids=None, limit=4, record=True):
     query=(select(Chunk,MaterialVersion,Material).join(MaterialVersion,Chunk.version_id==MaterialVersion.id)
            .join(Material,MaterialVersion.material_id==Material.id)
@@ -67,11 +81,12 @@ def register_gap(db,user,question,before):
     existing=db.scalars(select(KnowledgeGap).where(KnowledgeGap.class_id==user.class_id,
                            KnowledgeGap.state.in_(['pending','approved','indexing','index_failed']))
                        .with_for_update()).all()
-    match=None
+    vector=embed(question)
+    match=None;score=0
     for gap in existing:
-        other=terms(gap.question)
-        if len(words & other)/max(1,len(words | other))>=0.65:
-            match=gap;break
+        similarity=cosine(vector,embed(gap.question))
+        if similarity>=GAP_MERGE_SIMILARITY and similarity>score:
+            match=gap;score=similarity
     if match:
         match.heat+=1;match.student_ids=sorted(set(match.student_ids+[user.id]));return match
     fingerprint=hashlib.sha256(' '.join(sorted(words)).encode()).hexdigest()

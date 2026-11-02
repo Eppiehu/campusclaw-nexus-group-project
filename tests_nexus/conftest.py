@@ -34,6 +34,7 @@ def system(monkeypatch):
         with transaction() as db:db.add(Task(id=identifier,kind=kind,target_id=target,class_id=klass,state='queued'))
         return identifier
     monkeypatch.setattr(api,'schedule',schedule)
+    monkeypatch.setattr(jobs,'schedule',schedule)
     app=create_app({'TESTING':True})
     from redis import Redis
     Redis.from_url(os.environ['NEXUS_REDIS_URL']).delete('nexus:login:'+hashlib.sha256(b'127.0.0.1').hexdigest())
