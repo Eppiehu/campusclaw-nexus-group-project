@@ -1,5 +1,7 @@
 # 任务
 
+- [x] 增加 Windows BAT/PowerShell 入口及说明；5.1 语法、BAT 缺 Docker 失败、模拟成功/迁移失败控制流已验证，真实 Docker Desktop 启动 NOT RUN。
+
 - [x] 核对现有 Compose、脚本、服务器容器和端口；选择独立部署位置。
 - [x] 增加私有配置生成、预检、依赖等待和 API 健康等待。
 - [x] 更新 README 和 Linux 部署/排错说明。

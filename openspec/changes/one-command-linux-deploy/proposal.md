@@ -6,6 +6,8 @@
 
 ## 范围
 
+补充 Windows 根目录 `start.bat` 与 PowerShell 5.1 启动脚本，复用同一 Compose：Docker Desktop 使用 Linux 容器时，可双击完成配置、构建、迁移、健康等待并打开本机浏览器。首次默认仅监听回环地址；不要求 WSL Shell 或 OpenSSL。
+
 改造现有部署脚本，首次生成私有随机演示配置，执行 Docker/Compose/端口预检，依序构建、迁移、初始化和健康等待。更新 README 与 Linux 部署说明。保持现有 Compose 项目名、数据卷、业务 API、数据库结构和端口默认值不变。
 
 对网络受限主机允许通过私有环境变量选择 npm/PyPI 镜像，以及使用本地可信 FastEmbed 模型缓存；缓存不入库。默认仍从公开源构建。

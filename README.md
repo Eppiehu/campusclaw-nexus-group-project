@@ -6,6 +6,8 @@
 
 ## 当前实现与运行入口
 
+Windows 用户安装并启动 Docker Desktop（Linux 容器）后，可双击根目录 **`start.bat`**，健康检查通过后自动打开本机页面。详细配置与排错见 [Windows 一键启动](docs/windows-start.md)。
+
 本仓库包含 Python/Flask API、Vue 前端、PostgreSQL/pgvector 迁移、Redis/RQ Worker、LangGraph、MCP 工具、虚构种子账号及隔离测试。它是**待小组复核的实现基线**；完整满足目标规约、Linux 冷启动、并发容量和 HTTPS 尚待逐项验证。
 
 在有 Docker Compose 的 Linux 环境运行 `sh deploy/nexus-deploy.sh`。首次运行会生成不入库的 `.env.nexus.local` 和随机演示密码；按需先编辑其中的 `NEXUS_PORT` 与 `OPENAI_API_KEY`。脚本会检查端口、构建镜像、启动数据库和 Redis、执行迁移与幂等种子初始化，最后等待 API 健康检查通过。重复运行可更新同一 Compose 项目。默认端口为 8080；构建阶段需能下载 Python/Node 依赖和公开嵌入模型。查看详细步骤见 [Linux 部署](docs/linux-deploy.md)。
