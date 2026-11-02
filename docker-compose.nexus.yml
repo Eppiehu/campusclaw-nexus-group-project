@@ -3,9 +3,11 @@ x-backend: &backend
   image: campusclaw-nexus-group:local
   build:
     context: .
-    dockerfile: Dockerfile.nexus
+    dockerfile: ${NEXUS_DOCKERFILE:-Dockerfile.nexus}
     args:
       NEXUS_PIP_INDEX_URL: ${NEXUS_PIP_INDEX_URL:-https://pypi.org/simple}
+      NEXUS_NPM_REGISTRY: ${NEXUS_NPM_REGISTRY:-https://registry.npmjs.org}
+      NEXUS_PREFETCH_MODEL: ${NEXUS_PREFETCH_MODEL:-1}
   env_file: .env.nexus.local
   environment:
     CAMPUSCLAW_EDITION: nexus

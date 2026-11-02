@@ -35,6 +35,8 @@ test-results/
 /storage/
 /logs/
 /backups/
+/model-cache/*
+!/model-cache/.gitkeep
 *.db
 *.sqlite
 *.sqlite3

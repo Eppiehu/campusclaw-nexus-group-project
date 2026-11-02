@@ -6,9 +6,11 @@
 
 ## 当前实现与运行入口
 
+Windows 用户安装并启动 Docker Desktop（Linux 容器）后，可双击根目录 **`start.bat`**，健康检查通过后自动打开本机页面。首次空库才初始化；日常启动复用容器与数据。更新代码时单独使用 **`update.bat`**。详细配置与排错见 [Windows 一键启动](docs/windows-start.md)。
+
 本仓库包含 Python/Flask API、Vue 前端、PostgreSQL/pgvector 迁移、Redis/RQ Worker、LangGraph、MCP 工具、虚构种子账号及隔离测试。它是**待小组复核的实现基线**；完整满足目标规约、Linux 冷启动、并发容量和 HTTPS 尚待逐项验证。
 
-在有 Docker Compose 的全新 Linux 环境，复制 `.env.nexus.example` 为**不入库**的 `.env.nexus.local`，填写随机签名密钥、数据库密码和虚构演示账号密码，然后运行 `sh deploy/nexus-deploy.sh`。脚本先构建前端与本地嵌入模型镜像，再启动数据库和 Redis、执行迁移/种子初始化，最后启动 API、Worker 和 Scheduler。默认对外端口为 8080，可通过 `NEXUS_PORT` 调整；`/health` 用于检查数据库与 Redis。构建阶段需能下载 Python/Node 依赖和公开嵌入模型。当前尚未在干净 Linux 主机实际执行上述流程，不能据此标记 PASS。
+在有 Docker Compose 的 Linux 环境运行 `sh deploy/nexus-deploy.sh`。首次运行会生成不入库的 `.env.nexus.local` 和随机演示密码；按需先编辑其中的 `NEXUS_PORT` 与 `OPENAI_API_KEY`。脚本会检查端口、构建镜像、启动数据库和 Redis、执行迁移与幂等种子初始化，最后等待 API 健康检查通过。重复运行可更新同一 Compose 项目。默认端口为 8080；构建阶段需能下载 Python/Node 依赖和公开嵌入模型。查看详细步骤见 [Linux 部署](docs/linux-deploy.md)。
 
 不要把 `.env.nexus.local`、真实密钥、数据库、模型缓存、PDF 或截图提交到版本库。组内开发流程与尚未对齐的目标见[实施审计](docs/implementation-import.md)。
 

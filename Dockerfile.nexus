@@ -1,8 +1,9 @@
 FROM node:24-alpine AS web-builder
 WORKDIR /src
-RUN npm install --global pnpm@11
+ARG NEXUS_NPM_REGISTRY=https://registry.npmjs.org
+RUN npm install --global pnpm@11 --registry "$NEXUS_NPM_REGISTRY"
 COPY web ./web
-RUN pnpm --dir web install --frozen-lockfile && pnpm --dir web build
+RUN pnpm --dir web install --frozen-lockfile --registry "$NEXUS_NPM_REGISTRY" && pnpm --dir web build
 
 FROM python:3.12-slim
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PYTHONPATH=/app CAMPUSCLAW_EDITION=nexus \
@@ -17,7 +18,9 @@ COPY scripts/nexus_init.py scripts/nexus_worker.py scripts/nexus_scheduler.py ./
 COPY migrations/nexus ./migrations/nexus
 COPY alembic-nexus.ini ./
 COPY --from=web-builder /src/web/dist ./web/dist
-RUN mkdir -p /app/nexus-data/models && HF_HUB_OFFLINE=0 python -c "from fastembed import TextEmbedding; TextEmbedding(model_name='BAAI/bge-small-zh-v1.5', cache_dir='/app/nexus-data/models')" \
+COPY model-cache/ /app/nexus-data/models/
+ARG NEXUS_PREFETCH_MODEL=1
+RUN if [ "$NEXUS_PREFETCH_MODEL" = 1 ]; then HF_HUB_OFFLINE=0 python -c "from fastembed import TextEmbedding; TextEmbedding(model_name='BAAI/bge-small-zh-v1.5', cache_dir='/app/nexus-data/models')"; fi \
     && useradd --uid 10001 --create-home nexus && chown -R nexus:nexus /app/nexus-data
 USER nexus
 EXPOSE 8080
