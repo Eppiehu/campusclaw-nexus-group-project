@@ -55,7 +55,9 @@ dc() { docker compose --env-file "$env_file" -f docker-compose.nexus.yml "$@"; }
 dc config --quiet
 port=$(sed -n 's/^NEXUS_PORT=//p' "$env_file" | tail -n 1)
 port=${port:-8080}
-case "$port" in *[!0-9]*|'') echo 'NEXUS_PORT must be numeric' >&2; exit 1;; esac
+case "$port" in
+  ''|*[!0-9]*) echo 'NEXUS_PORT must be numeric' >&2; exit 1 ;;
+esac
 if [ -z "$(dc ps -q api)" ] && command -v ss >/dev/null 2>&1 && ss -lnt "( sport = :$port )" | grep -q LISTEN; then
   echo "Port $port is already in use. Set another NEXUS_PORT in $env_file; no service was changed." >&2
   exit 1
