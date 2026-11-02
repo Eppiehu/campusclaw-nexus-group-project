@@ -10,6 +10,8 @@ sh deploy/nexus-deploy.sh
 
 脚本检查 Docker、Compose、配置和端口，构建前端与后端镜像，启动 PostgreSQL/Redis，等待它们健康，执行迁移与幂等种子初始化，再启动 API/Worker/Scheduler 并等待 `/health`。可用 `sh deploy/nexus-deploy.sh --check` 只做预检。构建阶段需要访问 npm、PyPI 和公开嵌入模型源；首次构建可能较久。默认只有 API 的 8080 对外映射，数据库与 Redis 不开放宿主机端口。
 
+网络受限时可在私有环境文件中设置 `NEXUS_NPM_REGISTRY`、`NEXUS_PIP_INDEX_URL` 为可访问的依赖镜像。若已有可信的 `BAAI/bge-small-zh-v1.5` FastEmbed 缓存，把缓存内容放进仓库根目录 `model-cache/`（该目录被 Git 忽略），并设置 `NEXUS_PREFETCH_MODEL=0`；否则保持默认值 `1`，在构建阶段下载模型。不得把模型文件提交到 Git。
+
 部署后检查：
 
 ```sh
