@@ -1,0 +1,17 @@
+.env
+.env.*
+tmp/
+apitest/report/
+output/
+web/node_modules/
+web/.pnpm-store/
+nexus-data/
+_vendor/
+data/
+uploads/
+__pycache__/
+*.pyc
+tests/
+.git/
+*.zip
+_tools/

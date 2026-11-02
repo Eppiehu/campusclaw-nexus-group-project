@@ -1,5 +1,7 @@
 # Linux 一键容器部署
 
+低内存服务器可先在工作站的 `web/` 运行 `pnpm install --frozen-lockfile && pnpm run build`，把同一提交的 `web/dist` 连同源码传到服务器，并在私有环境文件设置 `NEXUS_DOCKERFILE=Dockerfile.nexus.prebuilt`。该模式仍构建后端镜像，但避免在服务器编译前端；默认模式保持完整多阶段构建。
+
 在 Linux x86_64、Docker Engine 与 Compose 插件可用的主机上，从仓库根目录运行：
 
 ```sh
