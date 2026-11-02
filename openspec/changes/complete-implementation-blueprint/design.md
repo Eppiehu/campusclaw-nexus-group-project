@@ -2,7 +2,9 @@
 
 ## Context
 
-项目当前只有规范和无密钥模板，尚无应用代码。技术栈已规划为 Vue 3/TypeScript 前端、Flask API、PostgreSQL/pgvector、LangGraph、Redis/RQ 与 Docker Compose；此变更要把它转成可分工、可配置、可验收的蓝图。
+以下描述写这份蓝图时的仓库。实现基线后来已经进入 `main`，当前状态以 `docs/implementation-import.md` 为准，不以“尚无应用代码”理解现在的仓库。
+
+写蓝图时，项目只有规范和无密钥模板，尚无应用代码。技术栈已规划为 Vue 3/TypeScript 前端、Flask API、PostgreSQL/pgvector、LangGraph、Redis/RQ 与 Docker Compose；此变更要把它转成可分工、可配置、可验收的蓝图。
 
 ## Goals / Non-Goals
 

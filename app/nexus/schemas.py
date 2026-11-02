@@ -11,9 +11,19 @@ class Login(Strict):
     password:str=Field(min_length=1,max_length=200)
 
 
-class Criterion(Strict):
-    name:str=Field(min_length=1,max_length=100)
-    points:float=Field(gt=0,le=100)
+class LectureTitle(Strict):
+    title:str=Field(min_length=1,max_length=40)
+
+
+def rubric_text(value)->str:
+    if isinstance(value,str):return value.strip()
+    if isinstance(value,list):
+        names=[]
+        for item in value:
+            if isinstance(item,dict) and str(item.get('name') or '').strip():names.append(str(item['name']).strip())
+            elif isinstance(item,str) and item.strip():names.append(item.strip())
+        return '、'.join(names)
+    return ''
 
 
 class AssignmentInput(Strict):
@@ -21,7 +31,8 @@ class AssignmentInput(Strict):
     question_template:str=Field(min_length=1,max_length=4000)
     ranges:dict[str,list[int]]
     answer_expression:str=Field(min_length=1,max_length=200)
-    rubric:list[Criterion]=Field(min_length=1,max_length=10)
+    answer_hint:str=Field(default='',max_length=2000)
+    rubric:str=Field(min_length=1,max_length=2000)
     deadline:str
 
     @model_validator(mode='after')
@@ -31,18 +42,17 @@ class AssignmentInput(Strict):
             if not re.fullmatch('[a-z][a-z0-9_]{0,15}',key) or len(bounds)!=2 or not -10000<=bounds[0]<=bounds[1]<=10000:
                 raise ValueError('参数名或范围不合法')
         if not self.ranges or len(self.ranges)>5:raise ValueError('参数数量须为1到5')
-        if sum(c.points for c in self.rubric)!=100:raise ValueError('Rubric总分必须为100')
+        text=self.rubric.strip()
+        if not text or len(text)>2000:raise ValueError('评分说明须为1至2000字')
+        self.rubric=text
+        hint=self.answer_hint.strip()
+        if len(hint)>2000:raise ValueError('作答提示不能超过2000字')
+        self.answer_hint=hint
         return self
 
 
-class GradeItem(Strict):
-    criterion:str
-    score:float=Field(ge=0,le=100)
-    reason:str=Field(min_length=1,max_length=1500)
-
-
 class Grade(Strict):
-    items:list[GradeItem]=Field(min_length=1,max_length=10)
+    score:float=Field(ge=0,le=100)
     feedback:str=Field(min_length=1,max_length=3000)
 
 

@@ -8,7 +8,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 for _key,_value in dotenv_values(ROOT / '.env.nexus.local').items():
-    if _key!='CAMPUSCLAW_EDITION' and _value is not None:os.environ.setdefault(_key,_value)
+    if _key!='CAMPUSCLAW_EDITION' and _value and not os.environ.get(_key):os.environ[_key]=_value
 
 
 def engine(url=None):

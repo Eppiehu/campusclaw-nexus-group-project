@@ -87,6 +87,7 @@ class MaterialVersion(Record, Base):
     state: Mapped[str] = mapped_column(String(24), default='draft')
     content: Mapped[str] = mapped_column(Text)
     sha256: Mapped[str] = mapped_column(String(64))
+    chunk_options: Mapped[dict] = mapped_column(JSON, default=dict)
     error: Mapped[str | None] = mapped_column(Text)
 
 
@@ -145,7 +146,8 @@ class Assignment(Record, Base):
     question_template: Mapped[str] = mapped_column(Text)
     ranges: Mapped[dict] = mapped_column(JSON)
     answer_expression: Mapped[str] = mapped_column(String(200))
-    rubric: Mapped[list] = mapped_column(JSON)
+    answer_hint: Mapped[str] = mapped_column(Text, default='')
+    rubric: Mapped[str | list] = mapped_column(JSON)
     deadline: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     state: Mapped[str] = mapped_column(String(24), default='draft')
 

@@ -23,16 +23,20 @@ def execute(name,auth_token,agent_id,**arguments):
             if name=='lecture_search':
                 result={'hits':search(db,user,arguments['query'],agent.material_ids)}
             elif name=='current_assignments':
-                rows=db.scalars(select(Assignment).where(Assignment.class_id==user.class_id,Assignment.state!='draft'))
+                rows=db.scalars(select(Assignment).where(Assignment.class_id==user.class_id,Assignment.state=='published'))
                 result={'assignments':[{'id':a.id,'title':a.title,'deadline':a.deadline.isoformat()} for a in rows]}
             elif name=='my_wrong_questions':
-                rows=db.scalars(select(WrongQuestion).where(WrongQuestion.class_id==user.class_id,WrongQuestion.user_id==user.id))
+                due=select(Submission.id).join(Paper,Paper.id==Submission.paper_id).join(Assignment,Assignment.id==Paper.assignment_id).where(Assignment.deadline<=now())
+                rows=db.scalars(select(WrongQuestion).where(WrongQuestion.class_id==user.class_id,WrongQuestion.user_id==user.id,WrongQuestion.submission_id.in_(due)))
                 result={'wrong_questions':[{'id':r.id,'explanation':r.explanation} for r in rows]}
             elif name=='assignment_rubric':
                 row=db.get(Assignment,arguments['assignment_id'])
-                if not row or row.class_id!=user.class_id or (user.role=='student' and row.state=='draft'):
+                if not row or row.class_id!=user.class_id or (user.role=='student' and row.state!='published'):
                     raise PermissionError('作业不可访问')
-                result={'assignment_id':row.id,'title':row.title,'rubric':row.rubric}
+                if user.role=='student' and row.deadline>now():
+                    raise PermissionError('截止后才能查看评分规则')
+                from .schemas import rubric_text
+                result={'assignment_id':row.id,'title':row.title,'rubric':rubric_text(row.rubric)}
             elif name=='class_statistics':
                 if user.role!='teacher':raise PermissionError('仅教师可查询班级统计')
                 start=week_start()

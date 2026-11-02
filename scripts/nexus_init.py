@@ -4,5 +4,7 @@ from app.nexus.seed import seed
 
 if __name__=='__main__':
     command.upgrade(Config('alembic-nexus.ini'),'head')
-    seed()
+    created, refreshed = seed()
     print('Nexus schema and seed accounts ready')
+    print('created: ' + (', '.join(created) or 'none'))
+    print('refreshed: ' + (', '.join(refreshed) or 'none'))
