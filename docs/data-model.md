@@ -1,5 +1,7 @@
 # 数据模型与约束（规划版）
 
+Issue #9 已实现 `mcp_connections` 表及 `agents.tools` 命名空间绑定，字段和迁移见 [MCP 连接实现](mcp-connections.md)。下文其余目标模型保持规划状态。
+
 使用 PostgreSQL 保存业务事实，pgvector 保存材料片段向量，Redis 仅作任务队列/短期状态。本文是逻辑模型，不是迁移脚本。表名、字段类型与索引在实现 PR 中锁定。
 
 ## 1. 身份和班级

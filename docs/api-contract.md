@@ -44,7 +44,7 @@
 | `POST /api/conversations/:id/messages/stream` | 发送消息并流式接收 | 使用 Bearer 的 fetch；事件含消息片段、引用、工具状态、结束/错误 |
 | `GET /api/citations/:id` | 引用片段详情 | 会话与材料双重鉴权，指向不可变版本 |
 
-Skill/MCP 的拟定接口如下。具体字段与可执行格式在单独实现变更中锁定，未经审核的上传内容不能直接运行。
+Skill/MCP 的目标接口如下。Issue #9 已实现的 MCP 连接路径为 `/api/nexus/mcp/*`，确切字段与状态见 [MCP 连接实现](mcp-connections.md)，不把下表目标路径当作现有路由。未经审核的上传内容不能直接运行。
 
 | 方法与路径 | 用途 | 权限与关键行为 |
 | --- | --- | --- |

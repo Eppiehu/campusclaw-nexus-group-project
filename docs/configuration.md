@@ -1,5 +1,7 @@
 # 配置与环境变量规范
 
+已实现 MCP 配置：`NEXUS_MCP_SERVERS` 运维服务器/班级/工具允许列表、`NEXUS_MCP_SECRET_*` 私有凭据引用、仅限隔离回环测试的 `NEXUS_MCP_ALLOW_LOOPBACK`。具体格式和边界见 [MCP 连接实现](mcp-connections.md)。默认无外部服务器授权。
+
 本文件说明未来实现时配置项的含义与安全要求。[`.env.example`](../.env.example) 只提供**无密钥模板**，不能直接作为生产配置。变量命名在首个实现 PR 中与程序及 Compose 文件逐项核对，新增或改名须同步更新本文。
 
 **实现基线说明：**首轮导入的 Nexus 代码沿用个人项目的 `NEXUS_*`、`OPENAI_API_KEY`、`OPENAI_BASE_URL` 命名，运行时使用[`.env.nexus.example`](../.env.nexus.example) 复制出的 `.env.nexus.local`；本页下表和根目录 `.env.example` 仍是小组目标契约，不可直接拿来启动导入基线。命名统一、令牌存储与刷新机制的差异记录在[导入审计](implementation-import.md)，应由后续 PR 修复后更新本页。

@@ -14,6 +14,8 @@
 
 ## 文档导航
 
+- [教师 MCP 连接配置](docs/mcp-connections.md)：登记、测试、绑定、运行时鉴权及运维允许列表（Issue #9）。
+
 - [功能与权限要求](docs/requirements.md)：角色、课程基线、三项新增业务及失败路径。
 - [技术框架与架构](docs/architecture.md)：拟采用的技术栈、模块边界、数据与部署约束。
 - [实施阶段与验收](docs/delivery.md)：交付顺序、可复现的验收场景和证据要求。
