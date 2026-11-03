@@ -6,5 +6,5 @@
 - [x] 实现教师连接配置/测试与绑定页面。
 - [x] 本地6项测试通过：隔离 HTTP、班级/角色/绑定、停用/轮换、失败脱敏、重定向与模式拒绝、内置分派。
 - [x] 更新接口、模型、配置和前端说明，前端类型检查与构建通过。
-- [ ] 在 PR CI 验证 PostgreSQL 新库/升级迁移及原有全量业务测试。
+- [x] [PR CI](https://github.com/Eppiehu/campusclaw-nexus-group-project/actions/runs/41575356807) 后端45项全部通过（含 PostgreSQL 新库/升级迁移及原业务回归），前端冻结安装和构建通过。
 - [ ] 独立 PR 由同学审核合并；公网 MCP、真实模型与浏览器 E2E 保持 NOT RUN。

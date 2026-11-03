@@ -44,3 +44,5 @@
 `python -m pytest tests_nexus/test_external_mcp.py -q` 使用临时 SQLite（仅授权相关表）及真实回环 FastMCP HTTP 服务，凭据和问题均虚构。验证发现、实际调用、白名单、参数篡改、班级/角色/绑定、停用/轮换失效、异常脱敏、内置分派和轮次上限。SQLite 不代替 PostgreSQL 迁移与全量业务测试，后者交 PR CI。
 
 公网第三方服务、真实教学资料外发、真实模型触发 MCP 和生产部署均 NOT RUN。本 Issue 未改生产环境。
+
+实际记录：[GitHub Actions](https://github.com/Eppiehu/campusclaw-nexus-group-project/actions/runs/41575356807) 验证实现提交 `c95e661`，后端45项测试全部 PASS，无跳过；包含 PostgreSQL 新库迁移及模拟既有0004结构的升级。前端冻结安装、类型检查及生产构建 PASS。本机6项隔离测试 PASS；本机没有 PostgreSQL，迁移测试由上述 CI 补足。
