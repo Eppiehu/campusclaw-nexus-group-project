@@ -1,5 +1,7 @@
 # 前端开发蓝图
 
+Issue #9：`AppsView` 内新增 MCP 连接登记、测试、启停、模式查看区；`AgentFormView` 只显示已测试工具供绑定，并允许取消失效绑定。详见 [MCP 连接](mcp-connections.md)。
+
 本文件规定前端结构。目标栈为 Vue 3、TypeScript、Vite、Vue Router、Pinia、Element Plus、ECharts。当前 `web/` 已把原来的单页拆成路由和 Pinia，并保留 `/api/nexus/*`。前端只负责交互与展示，权限和分数仍以服务端为准。浏览器令牌仍放在 `localStorage`，刷新协议不在本次范围，见[导入差异](implementation-import.md)。
 
 ## 1. 页面与路由

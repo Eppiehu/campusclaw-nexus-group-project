@@ -14,6 +14,8 @@ const router = useRouter()
 const session = useSession()
 const catalog = useCatalog()
 const missing = ref(false)
+const externalTools = ref<Row[]>([])
+const unavailableTools = computed(() => (form.tools as string[]).filter(name => !toolOptions.some(t => t[0] === name) && !externalTools.value.some(t => t.binding === name)))
 const ready = ref(false)
 const isNew = computed(() => route.path.endsWith('/apps/new'))
 const agentId = computed(() => isNew.value ? 0 : Number(route.params.id))
@@ -31,6 +33,7 @@ function back() {
 async function load() {
   ready.value = false
   missing.value = false
+  if (!session.previewing) await session.action(async () => { externalTools.value = await api('/mcp/tools') })
   if (isNew.value) {
     Object.assign(form, blank())
     ready.value = true
@@ -94,6 +97,8 @@ async function remove() {
         <div><label for="agent-materials">讲义范围</label><el-select id="agent-materials" v-model="form.material_ids" multiple><el-option v-for="material in catalog.lists.materials" :key="material.id" :value="material.id" :label="material.title" /></el-select></div>
         <div><label for="agent-skills">可用技能</label><el-select id="agent-skills" v-model="form.skill_ids" multiple><el-option v-for="skill in catalog.lists.skills" :key="skill.id" :value="skill.id" :label="skill.name" /></el-select></div>
         <div class="full"><label>外部工具</label><el-checkbox-group v-model="form.tools"><el-checkbox v-for="tool in toolOptions" :key="tool[0]" :value="tool[0]">{{ tool[1] }}</el-checkbox></el-checkbox-group></div>
+        <div class="full"><label>已测试的 MCP 工具</label><el-checkbox-group v-model="form.tools"><el-checkbox v-for="tool in externalTools" :key="tool.binding" :value="tool.binding">{{ tool.connection }} / {{ tool.name }}</el-checkbox></el-checkbox-group><p class="muted">在“应用与技能”页登记并测试连接；停用或重新配置后需要重新测试。</p></div>
+        <div v-if="unavailableTools.length" class="full"><label>失效绑定（取消勾选以移除）</label><el-checkbox-group v-model="form.tools"><el-checkbox v-for="name in unavailableTools" :key="name" :value="name">{{ name }}</el-checkbox></el-checkbox-group></div>
       </div>
       <div class="row" style="margin-top:20px">
         <el-button type="primary" :loading="session.busy" :disabled="!ready" @click="save">保存应用</el-button>

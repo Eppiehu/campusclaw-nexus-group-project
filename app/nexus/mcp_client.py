@@ -50,7 +50,22 @@ async def exchange(allowed,token=None,agent_id=None,calls=None):
                 return results
 
 
-def discover(allowed):return asyncio.run(exchange(allowed))
+def discover(allowed,token=None,agent_id=None):
+    from .external_mcp import discover as external_discover
+    builtins=[n for n in allowed if n in TOOL_NAMES]
+    return (asyncio.run(exchange(builtins)) if builtins else [])+external_discover(token,agent_id)
 
 
-def invoke(allowed,token,agent_id,calls):return asyncio.run(exchange(allowed,token,agent_id,calls))
+def invoke(allowed,token,agent_id,calls):
+    from .external_mcp import invoke as external_invoke
+    if len(calls)>4:
+        return [{'role':'tool','tool_call_id':c['id'],'content':json.dumps({'isError':True,'error':'本轮工具调用超过4次，未执行'})} for c in calls]
+    builtin_calls=[c for c in calls if c['function']['name'] in TOOL_NAMES]
+    results=asyncio.run(exchange([n for n in allowed if n in TOOL_NAMES],token,agent_id,builtin_calls)) if builtin_calls else []
+    for call in calls:
+        if call['function']['name'] not in TOOL_NAMES:
+            if call['function']['name'] not in allowed:
+                results.append({'role':'tool','tool_call_id':call['id'],'content':json.dumps({'isError':True,'error':'未绑定的工具'})})
+            else:results.append(external_invoke(token,agent_id,call))
+    indexed={r['tool_call_id']:r for r in results}
+    return [indexed[c['id']] for c in calls]

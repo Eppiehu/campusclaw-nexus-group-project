@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import MCPConnections from '../components/MCPConnections.vue'
 import { computed, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
@@ -110,6 +111,7 @@ async function confirmSkill() {
 
 <template>
   <TeacherGate probe="/students">
+    <MCPConnections />
     <section class="card fill">
       <el-tabs v-model="tab" class="section-tabs">
         <el-tab-pane name="templates">
