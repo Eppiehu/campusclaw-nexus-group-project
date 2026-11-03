@@ -70,6 +70,18 @@ class Agent(Record, Base):
     enabled: Mapped[bool] = mapped_column(Boolean, default=True)
 
 
+class MCPConnection(Record, Base):
+    __tablename__ = 'mcp_connections'
+    class_id: Mapped[str] = mapped_column(String(32), index=True)
+    name: Mapped[str] = mapped_column(String(100))
+    server_key: Mapped[str] = mapped_column(String(64))
+    credential_ref: Mapped[str] = mapped_column(String(100), default='')
+    state: Mapped[str] = mapped_column(String(16), default='untested')
+    enabled: Mapped[bool] = mapped_column(Boolean, default=True)
+    fingerprint: Mapped[str] = mapped_column(String(64), default='')
+    tools: Mapped[list] = mapped_column(JSON, default=list)
+
+
 class Material(Record, Base):
     __tablename__ = 'materials'
     class_id: Mapped[str] = mapped_column(String(32), index=True)

@@ -16,6 +16,8 @@ def create_app(config=None):
     if config:app.config.update(config)
     from .api import bp
     app.register_blueprint(bp)
+    from .mcp_api import bp as mcp_bp
+    app.register_blueprint(mcp_bp)
     @app.get('/api/nexus/openapi.json')
     def openapi():
         from .openapi import document

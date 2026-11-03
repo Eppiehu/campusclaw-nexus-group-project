@@ -222,7 +222,9 @@ def agent_values(db,row,values):
             setattr(row,key,list(dict.fromkeys(values[key])))
     if 'tools' in values:
         from .mcp_client import TOOL_NAMES
-        if not isinstance(values['tools'],list) or set(values['tools'])-TOOL_NAMES:raise ValueError('工具名称无效')
+        if not isinstance(values['tools'],list) or len(values['tools'])>25 or any(not isinstance(t,str) for t in values['tools']):raise ValueError('工具名称无效')
+        from .external_mcp import validate_bindings
+        validate_bindings(db,row.class_id,[t for t in values['tools'] if t not in TOOL_NAMES])
         row.tools=list(dict.fromkeys(values['tools']))
 
 

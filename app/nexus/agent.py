@@ -45,14 +45,16 @@ def workflow(user_id,agent_id,conversation_id,token,trace_id):
             hits=search(db,user,state['question'],agent.material_ids)
             business=any(x in state['question'] for x in ['作业','错题','Rubric','rubric','学情','统计'])
             gap=None
-            if not hits and not (business and agent.tools):
+            from .external_mcp import discover as discover_external
+            external_definitions=discover_external(token,agent_id)
+            if not hits and not (business and agent.tools) and not external_definitions:
                 gap=register_gap(db,user,state['question'],[])
             history=list(reversed(db.scalars(select(Message).where(Message.conversation_id==conversation_id)
                          .order_by(Message.id.desc()).limit(6)).all()))
             messages=[{'role':'system','content':system}]+[{'role':m.role,'content':m.content[:1000]} for m in history if m.role in ('user','assistant')]
             sources=[{'citation':f"[{hit['id']}]",'title':hit['title'],'content':hit['content']} for hit in hits]
             messages.append({'role':'user','content':json.dumps({'question':state['question'],'sources':sources},ensure_ascii=False)})
-            definitions=mcp_client.discover(agent.tools) if agent.tools and not gap else []
+            definitions=mcp_client.discover(agent.tools,token,agent_id) if agent.tools and not gap else []
             result=dict(messages=messages,citations=hits,skill_id=chosen.id if chosen else None,skill_name=chosen.name if chosen else None,
                         round=0,refusal=bool(gap),gap_id=gap.id if gap else None,tools=definitions)
             get_stream_writer()({'event':'meta','skill':result['skill_name'],'citations':hits,'gap_id':result['gap_id'],'trace_id':trace_id})
@@ -80,7 +82,7 @@ def workflow(user_id,agent_id,conversation_id,token,trace_id):
         for response in responses:
             get_stream_writer()({'event':'tool','tool_call_id':response['tool_call_id'],'result':json.loads(response['content'])})
         with transaction() as db:
-            audit(db,db.get(User,user_id),'agent.tools',agent_id,{'calls':state['tool_calls'],'responses':responses},request_id=trace_id)
+            audit(db,db.get(User,user_id),'agent.tools',agent_id,{'calls':[{'name':c['function']['name'],'tool_call_id':c['id']} for c in state['tool_calls']], 'results':[{'tool_call_id':r['tool_call_id'],'isError':json.loads(r['content']).get('isError',False)} for r in responses]},request_id=trace_id)
         return {'messages':state['messages']+responses,'tool_calls':[]}
     def save(state):
         with transaction() as db:
